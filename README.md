@@ -25,6 +25,17 @@ To remove generated output:
 npm run clean
 ```
 
+## PWA foundation
+
+- Manifest: `public/manifest.json` with `start_url` and `scope` set to `/wa/`.
+- Service Worker: `public/sw.js`, registered by `src/js/pwa.js`.
+- Offline document: `public/offline.html`.
+- App icons: 192×192, 512×512, and 512×512 maskable PNG files under `public/icons/`.
+- Navigation uses network-first with an offline fallback; same-origin static assets use cache-first with runtime caching.
+- Service Worker updates are detected on app load; a user-visible update action activates the waiting worker and reloads the page after controller change.
+
+Service Workers require a secure context (HTTPS, or localhost for development). The GitHub Pages target uses HTTPS. The current app shell is intentionally small; expand the precache list when additional critical routes and assets are introduced.
+
 ## Project layout
 
 - `public/`: static files copied to the published root.
@@ -54,4 +65,4 @@ GitHub Pages deployment configuration is deferred to a later implementation phas
 
 ## Project workflow
 
-Each implementation phase requires separate explicit approval. Completing this foundation does not authorize PWA, backend, integration, or deployment work.
+Each implementation phase requires separate explicit approval. Completing this foundation does not authorize backend, integration, or deployment work.
