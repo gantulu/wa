@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "wa-pwa";
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const APP_CACHE = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const BASE_PATH = new URL("./", self.location).pathname;
 const OFFLINE_URL = `${BASE_PATH}offline.html`;
@@ -16,7 +16,6 @@ self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(APP_CACHE);
     await cache.addAll(PRECACHE_URLS);
-    await self.skipWaiting();
   })());
 });
 
