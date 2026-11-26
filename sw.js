@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "wa-pwa";
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v3";
 const APP_CACHE = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const BASE_PATH = new URL("./", self.location).pathname;
 const OFFLINE_URL = `${BASE_PATH}offline.html`;
