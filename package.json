@@ -1,0 +1,12 @@
+{
+  "name": "whatsapp-pwa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Modular HTML, CSS, and JavaScript WhatsApp PWA frontend.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "clean": "node scripts/build.mjs --clean",
+    "build": "node scripts/build.mjs"
+  }
+}
