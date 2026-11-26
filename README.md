@@ -9,6 +9,7 @@ A static, installable-web-app project built with modular HTML, CSS, and JavaScri
 - Custom build script using Node.js built-in modules (no runtime/build dependencies)
 - GitHub Pages target: https://gantulu.github.io/wa/
 - Published base path: `/wa/`
+- Deployment source: branch `main`, folder `/(root)`
 
 ## Getting started
 
@@ -17,7 +18,7 @@ npm ci
 npm run build
 ```
 
-The static site is generated in `dist/`. The `dist/` directory is build output and is not the source of truth. Do not edit generated files directly.
+The static site is served directly from the repository root by GitHub Pages. The `dist/` directory is generated only for local build verification and is not the GitHub Pages publishing source. Do not edit generated files directly.
 
 To remove generated output:
 
@@ -27,10 +28,10 @@ npm run clean
 
 ## PWA foundation
 
-- Manifest: `public/manifest.json` with `start_url` and `scope` set to `/wa/`.
-- Service Worker: `public/sw.js`, registered by `src/js/pwa.js`.
-- Offline document: `public/offline.html`.
-- App icons: 192×192, 512×512, and 512×512 maskable PNG files under `public/icons/`.
+- Manifest: `manifest.json` with `start_url` and `scope` set to `/wa/`.
+- Service Worker: `sw.js`, registered by `src/js/pwa.js`.
+- Offline document: `offline.html`.
+- App icons: 192×192, 512×512, and 512×512 maskable PNG files under `icons/`.
 - Navigation uses network-first with an offline fallback; same-origin static assets use cache-first with runtime caching.
 - Service Worker updates are detected on app load; a user-visible update action activates the waiting worker and reloads the page after controller change.
 
@@ -38,17 +39,16 @@ Service Workers require a secure context (HTTPS, or localhost for development). 
 
 ## Project layout
 
-- `public/`: static files copied to the published root.
-- `pages/`: secondary HTML pages, copied to `dist/pages/`.
-- `src/assets/`: application assets, copied to `dist/assets/`.
-- `src/css/`: stylesheets, copied to `dist/assets/css/`.
-- `src/js/`: JavaScript modules, copied to `dist/assets/js/`.
+- Root deployment files: `index.html`, `manifest.json`, `sw.js`, and `offline.html`.
+- `icons/`: PWA icons served directly from the repository root.
+- `pages/`: secondary HTML pages.
+- `src/assets/`: application assets.
+- `src/css/`: stylesheets.
+- `src/js/`: JavaScript modules, including Service Worker registration.
 - `scripts/`: local build and maintenance scripts.
 - `tests/`: test suites introduced in later phases.
 - `docs/`: architecture and project documentation.
-- `dist/`: generated output; excluded from Git.
-
-When `pages/404.html` exists, the build also publishes it as `dist/404.html`, the root-level custom error document expected by GitHub Pages.
+- `dist/`: generated local verification output; excluded from Git.
 
 ## Environment and security
 
@@ -61,8 +61,8 @@ When `pages/404.html` exists, the build also publishes it as `dist/404.html`, th
 
 ## Deployment
 
-GitHub Pages deployment configuration is deferred to a later implementation phase. The build output is `dist/`; application-relative URLs must remain compatible with the `/wa/` base path.
+GitHub Pages is intended to publish directly from `main / (root)` using **Deploy from a branch**. GitHub Actions deployment is not used. GitHub Pages repository settings are managed separately and are not changed by the local build.
 
 ## Project workflow
 
-Each implementation phase requires separate explicit approval. Completing this foundation does not authorize backend, integration, or deployment work.
+Each implementation phase requires separate explicit approval. Completing this foundation does not authorize backend, integration, or GitHub Pages configuration changes.

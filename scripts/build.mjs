@@ -30,16 +30,22 @@ if (cleanOnly) {
 }
 
 await mkdir(distDir, { recursive: true });
-await copyIfPresent(path.join(rootDir, 'index.html'), path.join(distDir, 'index.html'));
-await copyIfPresent(path.join(rootDir, 'public'), distDir);
+
+// Mirror the GitHub Pages publishing layout: repository root is the web root.
+for (const file of ['index.html', 'manifest.json', 'sw.js', 'offline.html']) {
+  await copyIfPresent(path.join(rootDir, file), path.join(distDir, file));
+}
+await copyIfPresent(path.join(rootDir, 'icons'), path.join(distDir, 'icons'));
 await copyIfPresent(path.join(rootDir, 'pages'), path.join(distDir, 'pages'));
 await copyIfPresent(path.join(rootDir, 'pages', '404.html'), path.join(distDir, '404.html'));
-await copyIfPresent(path.join(rootDir, 'src', 'assets'), path.join(distDir, 'assets'));
-await copyIfPresent(path.join(rootDir, 'src', 'css'), path.join(distDir, 'assets', 'css'));
-await copyIfPresent(path.join(rootDir, 'src', 'js'), path.join(distDir, 'assets', 'js'));
 
-if (!(await exists(path.join(distDir, 'index.html')))) {
-  throw new Error('Build failed: index.html was not found at the project root.');
+// Keep source-relative paths intact so index.html works in dist/ without rewriting.
+await copyIfPresent(path.join(rootDir, 'src'), path.join(distDir, 'src'));
+
+for (const requiredFile of ['index.html', 'manifest.json', 'sw.js', 'offline.html']) {
+  if (!(await exists(path.join(distDir, requiredFile)))) {
+    throw new Error(`Build failed: required deployment file "${requiredFile}" is missing.`);
+  }
 }
 
-console.log('Build completed: dist/ is ready for static hosting.');
+console.log('Build completed: dist/ mirrors the static GitHub Pages root.');
