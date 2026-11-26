@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#111b21" />
     <meta name="description" content="WhatsApp PWA — modular web application." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="WhatsApp" />
     <base href="/wa/" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
     <title>WhatsApp PWA</title>
     <style>
       :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #111b21; color: #e9edef; }
@@ -16,6 +22,7 @@
       p { margin: 0; color: #aebac1; line-height: 1.65; }
       .eyebrow { margin-bottom: 10px; color: #53bdeb; font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
     </style>
+    <script type="module" src="./assets/js/pwa.js"></script>
   </head>
   <body>
     <main>
