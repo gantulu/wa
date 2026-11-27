@@ -1,0 +1,28 @@
+@media (max-width: 760px) {
+  .sidebar { flex: 1 1 100%; min-width: 0; border-right: 0; }
+  .chat-panel { display: none; }
+  .app-layout.is-chat-open .sidebar { display: none; }
+  .app-layout.is-chat-open .chat-panel { display: flex; flex: 1 1 100%; }
+  .back-button { display: inline-grid; }
+  .chat-header { padding: 0 8px; }
+  .message-list { padding: 18px 12px; }
+  .message-item { max-width: 88%; }
+  .message-composer { gap: 5px; padding: 8px; }
+  .composer-actions .optional-action { display: none; }
+  .chat-actions .optional-action { display: none; }
+  .empty-art { width: 150px; height: 150px; font-size: 100px; }
+  .chat-empty-state h1 { font-size: 24px; }
+}
+@media (max-width: 360px) {
+  .sidebar-header { padding: 0 10px; }
+  .conversation-item { padding-inline: 10px; }
+  .message-composer { gap: 4px; }
+  .composer-actions .icon-button { width: 34px; }
+}
+@media (min-width: 761px) {
+  .app-layout.is-chat-open .sidebar { display: flex; }
+  .app-layout.is-chat-open .chat-panel { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

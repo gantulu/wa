@@ -1,0 +1,12 @@
+.app-overlay { position: relative; z-index: 20; }
+.dialog-container, .drawer-container { position: fixed; z-index: 1100; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: #0008; }
+.dialog-container.is-open, .drawer-container.is-open { display: flex; }
+.dialog-card { width: min(100%, 420px); padding: 24px; border: 1px solid #394951; border-radius: 14px; background: #202c33; box-shadow: 0 20px 60px #0007; }
+.dialog-card h2 { margin: 0 0 10px; font-size: 18px; }
+.dialog-card p { color: #aebac1; font-size: 14px; line-height: 1.5; }
+.dialog-footer { display: flex; justify-content: flex-end; margin-top: 22px; }
+.dialog-close { padding: 9px 16px; border: 0; border-radius: 8px; background: var(--green); color: #062d25; font-weight: 700; cursor: pointer; }
+.notification-container { position: fixed; z-index: 1200; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.notification { max-width: min(420px, calc(100vw - 32px)); padding: 12px 16px; border: 1px solid #3b4a52; border-radius: 10px; background: #202c33; color: #e9edef; box-shadow: 0 8px 30px #0005; font-size: 13px; pointer-events: auto; }
+.pwa-update { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.pwa-update button { padding: 8px 12px; border: 0; border-radius: 8px; background: #25d366; color: #111b21; font-weight: 700; cursor: pointer; }
