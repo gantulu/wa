@@ -1,3 +1,4 @@
+#sidebar-root { display: flex; flex: 1; flex-direction: column; min-height: 0; }
 .sidebar {
   display: flex; flex: 0 0 390px; flex-direction: column; min-width: 300px;
   min-height: 0; border-right: 1px solid var(--border); background: #111b21;
