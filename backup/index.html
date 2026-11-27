@@ -2,17 +2,168 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>WhatsApp Layout (v1.6)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* ==========================================================================
-       WHATSAPP SCHEMA IMPLEMENTATION (v1.6)
+       WHATSAPP SCHEMA IMPLEMENTATION (v1.6) - RESPONSIVE MOBILE UPGRADE
        ========================================================================== */
     html {
       height: 100%;
+      height: 100dvh;
       margin: 0;
       padding: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    body {
+      height: 100%;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #111b21;
+      color: #111b21;
+    }
+
+    #root {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      height: 100dvh;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    #header {
+      height: 60px;
+      flex-shrink: 0;
+      background-color: #008069;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
+      z-index: 20;
+    }
+
+    #content {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      position: relative;
+      background-color: #efeae2;
+    }
+
+    /* Chat List View */
+    #chat-list-view {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background-color: #ffffff;
+      border-right: 1px solid #e9edef;
+    }
+
+    /* Chat Detail View */
+    #chat-detail-view {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      flex: 1;
+      min-width: 0;
+      background-color: #efeae2;
+      background-image: radial-gradient(#d4cdc3 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    #chat-header {
+      height: 60px;
+      flex-shrink: 0;
+      background-color: #f0f2f5;
+      border-bottom: 1px solid #d1d7db;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+
+    @media (min-width: 640px) {
+      #chat-header {
+        padding: 0 16px;
+      }
+    }
+
+    #message-content {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px;
+      scroll-behavior: smooth;
+    }
+
+    @media (min-width: 640px) {
+      #message-content {
+        padding: 16px;
+      }
+    }
+
+    #message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #message-input {
+      min-height: 60px;
+      flex-shrink: 0;
+      background-color: #f0f2f5;
+      border-top: 1px solid #d1d7db;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+    }
+
+    @media (min-width: 640px) {
+      #message-input {
+        gap: 10px;
+        padding: 8px 14px;
+      }
+    }
+
+    #footer {
+      height: calc(60px + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+      flex-shrink: 0;
+      background-color: #ffffff;
+      border-top: 1px solid #e9edef;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 20;
+    }
+
+    /* Hide footer on mobile when chat detail is active so keyboard & input have full breathing room */
+    @media (max-width: 767px) {
+      body.mobile-chat-open #footer {
+        display: none;
+      }
+      body.mobile-chat-open #message-input {
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+        min-height: calc(60px + env(safe-area-inset-bottom));
+      }
     }
 
     body {
@@ -170,16 +321,16 @@
         <span class="text-[11px] bg-white/20 px-2 py-0.5 rounded-full font-mono">v1.6</span>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 sm:gap-2">
         <button 
           id="toggleDebugBtn"
-          class="text-xs bg-white/15 hover:bg-white/25 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+          class="text-xs bg-white/15 hover:bg-white/25 active:bg-white/30 text-white px-2.5 sm:px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer min-h-[38px]"
           title="Toggle Schema Bounds"
         >
           <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
           <span class="hidden sm:inline">Schema Bounds</span>
         </button>
-        <button class="p-2 rounded-full hover:bg-white/15 transition-colors cursor-pointer" aria-label="Search">
+        <button id="headerSearchBtn" class="p-2.5 rounded-full hover:bg-white/15 active:bg-white/25 transition-colors cursor-pointer min-w-[40px] min-h-[40px] flex items-center justify-center" aria-label="Search">
           <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="7"></circle>
             <path d="M21 21l-4.35-4.35"></path>
@@ -195,8 +346,8 @@
       <section id="chat-list-view" class="w-full md:w-[360px] lg:w-[400px] flex-shrink-0">
         <!-- Search bar inside chat list -->
         <div class="p-2.5 border-b border-slate-100 bg-white sticky top-0 z-10">
-          <div class="bg-[#f0f2f5] rounded-lg px-3 py-1.5 flex items-center gap-2">
-            <svg class="w-4 h-4 text-slate-500 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
+          <div class="bg-[#f0f2f5] rounded-xl px-3 py-2 flex items-center gap-2">
+            <svg class="w-4 h-4 text-slate-500 stroke-current fill-none flex-shrink-0" stroke-width="2" viewBox="0 0 24 24">
               <circle cx="11" cy="11" r="7"></circle>
               <path d="M21 21l-4.35-4.35"></path>
             </svg>
@@ -204,7 +355,7 @@
               id="searchChatsInput"
               type="text" 
               placeholder="Search or start new chat" 
-              class="bg-transparent text-sm w-full focus:outline-none text-slate-700 placeholder-slate-500"
+              class="bg-transparent text-base sm:text-sm w-full focus:outline-none text-slate-700 placeholder-slate-500"
             />
           </div>
         </div>
@@ -214,13 +365,13 @@
       </section>
 
       <!-- #chat-detail-view: Right panel on desktop, full screen on mobile when chat active -->
-      <section id="chat-detail-view" class="hidden md:flex">
+      <section id="chat-detail-view" class="hidden md:flex w-full">
         
         <!-- #chat-header: 60px contact header -->
         <div id="chat-header">
-          <div class="flex items-center gap-3 min-w-0">
-            <!-- Mobile Back Button -->
-            <button id="mobileBackBtn" class="md:hidden p-1.5 -ml-1.5 rounded-full hover:bg-slate-200/70 text-slate-700 cursor-pointer" aria-label="Back to chats">
+          <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+            <!-- Mobile Back Button (enlarged touch target >= 44px) -->
+            <button id="mobileBackBtn" class="md:hidden p-2.5 -ml-2 rounded-full hover:bg-slate-200/70 active:bg-slate-300/70 text-slate-700 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Back to chats">
               <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2.2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
@@ -234,13 +385,13 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-1 text-slate-600">
-            <button class="p-2 rounded-full hover:bg-slate-200/70 transition-colors cursor-pointer" title="Video call">
+          <div class="flex items-center gap-0.5 sm:gap-1 text-slate-600 flex-shrink-0">
+            <button id="videoCallBtn" class="p-2.5 rounded-full hover:bg-slate-200/70 active:bg-slate-300/70 transition-colors cursor-pointer min-w-[42px] min-h-[42px] flex items-center justify-center" title="Video call">
               <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
             </button>
-            <button class="p-2 rounded-full hover:bg-slate-200/70 transition-colors cursor-pointer" title="Voice call">
+            <button id="voiceCallBtn" class="p-2.5 rounded-full hover:bg-slate-200/70 active:bg-slate-300/70 transition-colors cursor-pointer min-w-[42px] min-h-[42px] flex items-center justify-center" title="Voice call">
               <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
@@ -256,7 +407,7 @@
 
         <!-- #message-input: min-height: 60px -->
         <form id="message-input" autocomplete="off">
-          <button type="button" id="emojiBtn" class="emoji p-2 rounded-full text-slate-600 hover:bg-slate-200/70 transition-colors cursor-pointer" title="Emoji">
+          <button type="button" id="emojiBtn" class="emoji p-2 rounded-full text-slate-600 hover:bg-slate-200/70 active:bg-slate-300/70 transition-colors cursor-pointer min-w-[40px] min-h-[40px] flex items-center justify-center flex-shrink-0" title="Emoji">
             <svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="9"></circle>
               <path stroke-linecap="round" d="M8.5 14.5c.8 1.3 2.1 2 3.5 2s2.7-.7 3.5-2"></path>
@@ -265,7 +416,7 @@
             </svg>
           </button>
 
-          <button type="button" id="attachmentBtn" class="attachment p-2 rounded-full text-slate-600 hover:bg-slate-200/70 transition-colors cursor-pointer" title="Attach file">
+          <button type="button" id="attachmentBtn" class="attachment p-2 rounded-full text-slate-600 hover:bg-slate-200/70 active:bg-slate-300/70 transition-colors cursor-pointer min-w-[40px] min-h-[40px] flex items-center justify-center flex-shrink-0" title="Attach file">
             <svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
             </svg>
@@ -275,13 +426,13 @@
             id="textInput"
             type="text" 
             placeholder="Type a message" 
-            class="text-input flex-1 bg-white rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-500 focus:outline-none shadow-xs"
+            class="text-input flex-1 min-w-0 bg-white rounded-full px-4 py-2.5 text-base sm:text-sm text-slate-800 placeholder-slate-500 focus:outline-none shadow-xs"
           />
 
           <button 
             type="submit" 
             id="sendBtn"
-            class="send-button w-10 h-10 rounded-full bg-[#008069] hover:bg-[#006d59] text-white flex items-center justify-center transition-colors shadow-sm flex-shrink-0 cursor-pointer"
+            class="send-button w-11 h-11 rounded-full bg-[#008069] hover:bg-[#006d59] active:scale-95 text-white flex items-center justify-center transition-all shadow-sm flex-shrink-0 cursor-pointer"
             title="Send message"
           >
             <svg class="w-5 h-5 fill-current translate-x-0.5" viewBox="0 0 24 24">
@@ -296,7 +447,7 @@
 
     <!-- #footer: 60px bottom navigation bar -->
     <footer id="footer">
-      <button data-nav="Chats" class="nav-tab flex flex-col items-center justify-center gap-0.5 px-4 py-1 rounded-xl text-[#008069] font-semibold cursor-pointer">
+      <button data-nav="Chats" class="nav-tab flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-[#008069] font-semibold cursor-pointer min-h-[48px]">
         <div class="relative bg-[#d9fdd3] px-4 py-0.5 rounded-full">
           <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
@@ -306,7 +457,7 @@
         <span class="text-[11px]">Chats</span>
       </button>
 
-      <button data-nav="Updates" class="nav-tab flex flex-col items-center justify-center gap-0.5 px-4 py-1 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer">
+      <button data-nav="Updates" class="nav-tab flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer min-h-[48px]">
         <div class="px-4 py-0.5 rounded-full">
           <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="9" stroke-dasharray="14 4"></circle>
@@ -315,7 +466,7 @@
         <span class="text-[11px]">Updates</span>
       </button>
 
-      <button data-nav="Communities" class="nav-tab flex flex-col items-center justify-center gap-0.5 px-4 py-1 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer">
+      <button data-nav="Communities" class="nav-tab flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer min-h-[48px]">
         <div class="px-4 py-0.5 rounded-full">
           <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -324,7 +475,7 @@
         <span class="text-[11px]">Communities</span>
       </button>
 
-      <button data-nav="Calls" class="nav-tab flex flex-col items-center justify-center gap-0.5 px-4 py-1 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer">
+      <button data-nav="Calls" class="nav-tab flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 cursor-pointer min-h-[48px]">
         <div class="px-4 py-0.5 rounded-full">
           <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -491,7 +642,7 @@
           return `
             <div 
               data-chat-id="${chat.id}"
-              class="chat-item flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${isActive ? 'bg-[#f0f2f5]' : 'hover:bg-[#f5f6f6]'}"
+              class="chat-item flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-colors active:bg-[#e9edef] ${isActive ? 'md:bg-[#f0f2f5]' : 'hover:bg-[#f5f6f6]'}"
             >
               <!-- avatar -->
               <div class="avatar w-12 h-12 rounded-full ${chat.color} text-white font-semibold flex items-center justify-center flex-shrink-0 text-sm">
@@ -501,7 +652,7 @@
               <!-- contact-name & last-message -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between gap-2">
-                  <span class="contact-name font-semibold text-sm text-slate-900 truncate">${chat.name}</span>
+                  <span class="contact-name font-semibold text-[15px] sm:text-sm text-slate-900 truncate">${chat.name}</span>
                   <span class="timestamp text-[11px] flex-shrink-0 ${chat.unread > 0 ? 'text-[#25d366] font-semibold' : 'text-slate-500'}">
                     ${chat.timestamp}
                   </span>
@@ -521,9 +672,10 @@
           `;
         }).join("");
 
-        document.querySelectorAll(".chat-item").forEach(el => {
-          el.addEventListener("click", () => {
-            const id = Number(el.getAttribute("data-chat-id"));
+        // Attach click listeners to chat items
+        chatItemsContainer.querySelectorAll(".chat-item").forEach(item => {
+          item.addEventListener("click", () => {
+            const id = Number(item.getAttribute("data-chat-id"));
             selectChat(id, true);
           });
         });
@@ -533,19 +685,19 @@
         const chat = chats.find(c => c.id === activeChatId);
         if (!chat) return;
 
-        activeAvatar.className = `w-10 h-10 rounded-full ${chat.color} text-white font-semibold flex items-center justify-center flex-shrink-0 text-sm`;
         activeAvatar.textContent = chat.initials;
+        activeAvatar.className = `w-10 h-10 rounded-full ${chat.color} text-white font-semibold flex items-center justify-center flex-shrink-0 text-sm`;
         activeContactName.textContent = chat.name;
         activeContactStatus.textContent = chat.status;
 
         messageList.innerHTML = chat.messages.map(msg => `
           <div class="message-item flex ${msg.out ? 'justify-end' : 'justify-start'}">
-            <div class="message-bubble max-w-[82%] sm:max-w-[70%] px-3 py-2 text-sm text-slate-800 ${msg.out ? 'bubble-out' : 'bubble-in'}">
-              <p class="leading-relaxed break-words">${msg.text}</p>
+            <div class="message-bubble max-w-[85%] sm:max-w-[75%] px-3.5 py-2 ${msg.out ? 'bubble-out' : 'bubble-in'}">
+              <p class="text-sm text-slate-800 leading-relaxed break-words">${msg.text}</p>
               <div class="flex items-center justify-end gap-1 mt-1">
                 <span class="timestamp text-[10px] text-slate-500">${msg.time}</span>
                 ${msg.out ? `
-                  <span class="status text-[11px] font-bold ${msg.status === 'read' ? 'text-sky-500' : 'text-slate-400'}">
+                  <span class="status text-[11px] font-bold ${msg.status === 'read' ? 'text-[#53bdeb]' : 'text-slate-400'}">
                     ✓✓
                   </span>
                 ` : ''}
@@ -554,7 +706,25 @@
           </div>
         `).join("");
 
+        // Auto-scroll #message-content to latest message
         messageContent.scrollTop = messageContent.scrollHeight;
+      }
+
+      function openMobileChatDetail() {
+        if (window.innerWidth < 768) {
+          chatListView.classList.add("hidden");
+          chatDetailView.classList.remove("hidden");
+          chatDetailView.classList.add("flex");
+          document.body.classList.add("mobile-chat-open");
+          messageContent.scrollTop = messageContent.scrollHeight;
+        }
+      }
+
+      function closeMobileChatDetail() {
+        chatDetailView.classList.add("hidden");
+        chatDetailView.classList.remove("flex");
+        chatListView.classList.remove("hidden");
+        document.body.classList.remove("mobile-chat-open");
       }
 
       function selectChat(id, openOnMobile = false) {
@@ -567,18 +737,69 @@
         renderChatList();
         renderMessages();
 
-        if (openOnMobile && window.innerWidth < 768) {
-          chatListView.classList.add("hidden");
-          chatDetailView.classList.remove("hidden");
-          chatDetailView.classList.add("flex");
+        if (openOnMobile) {
+          openMobileChatDetail();
         }
       }
 
       // Mobile Back Button
-      mobileBackBtn.addEventListener("click", () => {
-        chatDetailView.classList.add("hidden");
-        chatDetailView.classList.remove("flex");
-        chatListView.classList.remove("hidden");
+      mobileBackBtn.addEventListener("click", closeMobileChatDetail);
+
+      // Swipe right gesture on mobile chat detail to return to chat list
+      let touchStartX = 0;
+      let touchStartY = 0;
+      chatDetailView.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      chatDetailView.addEventListener("touchend", (e) => {
+        if (window.innerWidth >= 768 || e.changedTouches.length !== 1) return;
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY);
+        if (touchStartX < 48 && deltaX > 75 && deltaY < 50) {
+          closeMobileChatDetail();
+        }
+      }, { passive: true });
+
+      // Keep mobile/desktop split views synchronized on screen resize or orientation change
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 768) {
+          chatListView.classList.remove("hidden");
+          chatDetailView.classList.remove("hidden");
+          chatDetailView.classList.add("flex");
+          document.body.classList.remove("mobile-chat-open");
+        } else if (!document.body.classList.contains("mobile-chat-open")) {
+          chatDetailView.classList.add("hidden");
+          chatDetailView.classList.remove("flex");
+          chatListView.classList.remove("hidden");
+        }
+      });
+
+      // Keep message scroll anchored when virtual keyboard opens on mobile
+      textInput.addEventListener("focus", () => {
+        setTimeout(() => {
+          messageContent.scrollTop = messageContent.scrollHeight;
+        }, 150);
+      });
+
+      // Header search button focuses chat search bar (and returns to list on mobile)
+      document.getElementById("headerSearchBtn").addEventListener("click", () => {
+        if (window.innerWidth < 768 && document.body.classList.contains("mobile-chat-open")) {
+          closeMobileChatDetail();
+        }
+        searchChatsInput.focus();
+      });
+
+      // Call buttons feedback
+      document.getElementById("videoCallBtn").addEventListener("click", () => {
+        showToast(`Starting video call with ${activeContactName.textContent}...`);
+      });
+
+      document.getElementById("voiceCallBtn").addEventListener("click", () => {
+        showToast(`Starting voice call with ${activeContactName.textContent}...`);
       });
 
       // Send Message
